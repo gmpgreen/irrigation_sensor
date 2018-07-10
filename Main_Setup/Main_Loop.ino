@@ -1,32 +1,65 @@
+
+uint32_t x=0; //Data to be transmitted!
+
 void loop() {
-  delay(5000);
-  
-  pinMode(0, OUTPUT); //Setting GPIO 0 as output
-  digitalWrite(0, LOW); //Turning on LED (GPIO 0)
-  
-  WiFiClient client; // Use WiFiClient class to create TCP connections
-  const int httpPort = 80;
-  if (!client.connect(host, httpPort)) {
-    Serial.println("connection failed");
+  // Ensure the connection to the MQTT server is alive (this will make the first
+  // connection and automatically reconnect when disconnected).  See the MQTT_connect
+  // function definition further below.
+  MQTT_connect();
+
+  // this is our 'wait for incoming subscription packets' busy subloop
+  // try to spend your time here
+
+  Adafruit_MQTT_Subscribe *subscription;
+  while ((subscription = mqtt.readSubscription(5000))) {
+    if (subscription == &temp_out) {
+      Serial.print(F("Got: "));
+      Serial.println((char *)temp_out.lastread);
+    }
+  }
+
+  // Now we can publish stuff!
+  Serial.print(F("\nSending temp val "));
+  Serial.print(x);
+  Serial.print("...");
+  if (temp.publish(x++) == 0) {
+    Serial.println(F("Failed"));
+  } else {
+    Serial.println(F("OK!"));
+  }
+
+  // ping the server to keep the mqtt connection alive
+  // NOT required if you are publishing once every KEEPALIVE seconds
+  /*
+  if(! mqtt.ping()) {
+    mqtt.disconnect();
+  }
+  */
+}
+
+// Function to connect and reconnect as necessary to the MQTT server.
+// Should be called in the loop function and it will take care if connecting.
+void MQTT_connect() {
+  int8_t ret;
+
+  // Stop if already connected.
+  if (mqtt.connected()) {
     return;
   }
-  
-  // We now create a URI for the request
-  String url = "/testwifi/index.html";
-  Serial.print("Requesting URL: ");
-  Serial.println(url);
-  
-  // This will send the request to the server
-  client.print(String("GET ") + url + " HTTP/1.1\r\n" +
-               "Host: " + host + "\r\n" + 
-               "Connection: close\r\n\r\n");
-  
-  digitalWrite(0, HIGH); //Turning off LED (GPIO 0)
-  delay(500);
-  
-  // Read all the lines of the reply from server and print them to Serial
-  while(client.available()){
-    String line = client.readStringUntil('\r');
-    Serial.print(line);
+
+  Serial.print("Connecting to MQTT... ");
+
+  uint8_t retries = 3;
+  while ((ret = mqtt.connect()) != 0) { // connect will return 0 for connected
+       Serial.println(mqtt.connectErrorString(ret));
+       Serial.println("Retrying MQTT connection in 5 seconds...");
+       mqtt.disconnect();
+       delay(5000);  // wait 5 seconds
+       retries--;
+       if (retries == 0) {
+         // basically die and wait for WDT to reset me
+         while (1);
+       }
   }
+  Serial.println("MQTT Connected!");
 }
