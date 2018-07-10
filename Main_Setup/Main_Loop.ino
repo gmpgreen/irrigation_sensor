@@ -1,11 +1,13 @@
 
-uint32_t x=0; //Data to be transmitted!
+float x=0; //Data to be transmitted! Replace with temperature data
 
 void loop() {
   // Ensure the connection to the MQTT server is alive (this will make the first
   // connection and automatically reconnect when disconnected).  See the MQTT_connect
   // function definition further below.
   MQTT_connect();
+
+  x = DHT_read(); //Reads Temperature and Humidity
 
   // this is our 'wait for incoming subscription packets' busy subloop
   // try to spend your time here
@@ -22,7 +24,7 @@ void loop() {
   Serial.print(F("\nSending temp val "));
   Serial.print(x);
   Serial.print("...");
-  if (temp.publish(x++) == 0) {
+  if (temp.publish(x) == 0) {
     Serial.println(F("Failed"));
   } else {
     Serial.println(F("OK!"));
@@ -63,3 +65,41 @@ void MQTT_connect() {
   }
   Serial.println("MQTT Connected!");
 }
+
+float DHT_read(){
+  
+  // Wait a few seconds between measurements.
+  delay(2000);
+  
+  // Reading temperature or humidity takes about 250 milliseconds!
+  // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
+  //float h = dht.readHumidity();
+  // Read temperature as Celsius (the default)
+  float t = dht.readTemperature();
+  // Read temperature as Fahrenheit (isFahrenheit = true)
+  float f = dht.readTemperature(true);
+
+  // Check if any reads failed and exit early (to try again).
+  //if (isnan(h) || isnan(t) || isnan(f)) {
+    //Serial.println("Failed to read from DHT sensor!");
+    //return;
+ // }
+
+  // Compute heat index in Fahrenheit (the default)
+  //float hif = dht.computeHeatIndex(f, h);
+  // Compute heat index in Celsius (isFahreheit = false)
+  //float hic = dht.computeHeatIndex(t, h, false);
+
+  //Serial.print("Humidity: ");
+  //Serial.print(h);
+  Serial.print(" %\t");
+  Serial.print("Temperature: ");
+  Serial.print(t);
+  Serial.print(" *C ");
+  //Serial.print("Heat index: ");
+  //Serial.print(hic);
+  //Serial.print(" *C ");
+
+  return t;
+}
+

@@ -35,6 +35,18 @@ Adafruit_MQTT_Publish temp = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/t
 // Setup a feed called 'onoff' for subscribing to changes.
 Adafruit_MQTT_Subscribe temp_out = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/feeds/temp_out");
 
+/******************************DHT SENSOR************************************/
+#include "DHT.h"
+
+#define DHTPIN 13     // what digital pin we're connected to
+
+// Uncomment whatever type you're using!
+#define DHTTYPE DHT11   // DHT 11
+//#define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
+//#define DHTTYPE DHT21   // DHT 21 (AM2301)
+
+DHT dht(DHTPIN, DHTTYPE);
+
 /*************************** Sketch Code ************************************/
 
 // Bug workaround for Arduino 1.6.6, it seems to need a function declaration
@@ -52,6 +64,8 @@ void setup() {
   Serial.print("Connecting to ");
   Serial.println(WLAN_SSID);
 
+
+
   WiFi.begin(WLAN_SSID, WLAN_PASS);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
@@ -62,6 +76,10 @@ void setup() {
   Serial.println("WiFi connected");
   Serial.println("IP address: "); Serial.println(WiFi.localIP());
 
+
+  dht.begin();//DHT Sensor
+
+  
   // Setup MQTT subscription for onoff feed.
   mqtt.subscribe(&temp_out);
   
