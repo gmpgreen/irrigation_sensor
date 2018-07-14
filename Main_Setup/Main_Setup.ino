@@ -63,10 +63,10 @@ void setup() {
   Serial.println(); Serial.println();
   Serial.print("Connecting to ");
   Serial.println(WLAN_SSID);
-
-
-
-  WiFi.begin(WLAN_SSID, WLAN_PASS);
+  
+  
+  WiFi.begin(WLAN_SSID, WLAN_PASS); //Connect to wifi
+  
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
