@@ -31,6 +31,8 @@ Adafruit_MQTT_Client mqtt(&client, AIO_SERVER, AIO_SERVERPORT, AIO_USERNAME, AIO
 // Setup a feed called 'temp' for publishing.
 // Notice MQTT paths for AIO follow the form: <username>/feeds/<feedname>
 Adafruit_MQTT_Publish temp = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/temp");
+Adafruit_MQTT_Publish moisture = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/moisture");
+Adafruit_MQTT_Publish humidity = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/humidity");
 
 // Setup a feed called 'onoff' for subscribing to changes.
 Adafruit_MQTT_Subscribe temp_out = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/feeds/temp_out");
@@ -46,6 +48,10 @@ Adafruit_MQTT_Subscribe temp_out = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "
 //#define DHTTYPE DHT21   // DHT 21 (AM2301)
 
 DHT dht(DHTPIN, DHTTYPE);
+
+/*************************SOIL MOISTURE SENSOR*******************************/
+int rainPin = A0;
+int thresholdValue = 800; // Change this to change when plant gets watered
 
 /*************************** Sketch Code ************************************/
 
@@ -76,9 +82,11 @@ void setup() {
   Serial.println("WiFi connected");
   Serial.println("IP address: "); Serial.println(WiFi.localIP());
 
-
+  // Temperature and Humdity Sensor
   dht.begin();//DHT Sensor
 
+  // Soil Moisture Sensor
+  pinMode(rainPin, INPUT);
   
   // Setup MQTT subscription for onoff feed.
   mqtt.subscribe(&temp_out);
