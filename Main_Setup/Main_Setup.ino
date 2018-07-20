@@ -7,8 +7,10 @@
 #include "Adafruit_MQTT_Client.h"
 
 /************************* WiFi Access Point *********************************/
-#define WLAN_SSID      "SHAW-COLDHOUSE-2.4G"
-#define WLAN_PASS      "engr4life"
+//#define WLAN_SSID      "SHAW-COLDHOUSE-2.4G"
+//#define WLAN_PASS      "engr4life"
+#define WLAN_SSID      "TELUS4850"
+#define WLAN_PASS      "wnpfn2cc5h"
 
 /************************* Adafruit.io Setup *********************************/ 
 #define AIO_SERVER      "io.adafruit.com"
@@ -49,9 +51,9 @@ Adafruit_MQTT_Subscribe temp_out = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "
 
 DHT dht(DHTPIN, DHTTYPE);
 
-/*************************SOIL MOISTURE SENSOR*******************************/
-int rainPin = A0;
+int moisturePin = A0;
 int thresholdValue = 800; // Change this to change when plant gets watered
+
 
 /*************************** Sketch Code ************************************/
 
@@ -86,7 +88,7 @@ void setup() {
   dht.begin();//DHT Sensor
 
   // Soil Moisture Sensor
-  pinMode(rainPin, INPUT);
+  pinMode(moisturePin, INPUT);
   
   // Setup MQTT subscription for onoff feed.
   mqtt.subscribe(&temp_out);

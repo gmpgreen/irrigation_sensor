@@ -1,7 +1,7 @@
 
-float x=0; //Data to be transmitted! Replace with temperature data
-float y=0; //Moisture data to be transmitted
-float z=0; //Humidity data to be transmitted
+int x=0; //Data to be transmitted! Replace with temperature data
+int y=0; //Moisture data to be transmitted
+int z=0; //Humidity data to be transmitted
 
 void loop() {
   // Ensure the connection to the MQTT server is alive (this will make the first
@@ -12,17 +12,6 @@ void loop() {
   x = DHT_readTemp(); //Reads Temperature and Humidity
   y = Moisture_read(); //Reads the moisture reading
   z = DHT_readHumid(); //Reads Humidity
-
-  // this is our 'wait for incoming subscription packets' busy subloop
-  // try to spend your time here
-
-  Adafruit_MQTT_Subscribe *subscription;
-  while ((subscription = mqtt.readSubscription(5000))) {
-    if (subscription == &temp_out) {
-      Serial.print(F("Got: "));
-      Serial.println((char *)temp_out.lastread);
-    }  
-  }
 
   // Now we can publish stuff!
   // Publish Temperature Data
@@ -92,76 +81,3 @@ void MQTT_connect() {
   }
   Serial.println("MQTT Connected!");
 }
-
-
-/****************************FUNCTION - DHT_read **********************************/
-
-float DHT_readTemp(){
-  
-  // Wait a few seconds between measurements.
-  delay(2000);
-  
-  // Reading temperature or humidity takes about 250 milliseconds!
-  // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
-  float h = dht.readHumidity();
-  // Read temperature as Celsius (the default)
-  float t = dht.readTemperature();
-  // Read temperature as Fahrenheit (isFahrenheit = true)
-  float f = dht.readTemperature(true);
-
-  // Check if any reads failed and exit early (to try again).
-  //if (isnan(h) || isnan(t) || isnan(f)) {
-    //Serial.println("Failed to read from DHT sensor!");
-    //return;
- // }
-
-  // Compute heat index in Fahrenheit (the default)
-  //float hif = dht.computeHeatIndex(f, h);
-  // Compute heat index in Celsius (isFahreheit = false)
-  float hic = dht.computeHeatIndex(t, h, false);
-
-  Serial.print("Temperature: ");
-  Serial.print(t);
-  Serial.print(" *C ");
-  Serial.print("Heat index: ");
-  Serial.print(hic);
-  Serial.print(" *C ");
-
-  return t;
-}
-
-float DHT_readHumid(){
-  
-  // Wait a few seconds between measurements.
-  delay(2000);
-  
-  // Reading temperature or humidity takes about 250 milliseconds!
-  // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
-  float h = dht.readHumidity();
-
-  Serial.print("Humidity: ");
-  Serial.print(h);
-  Serial.print(" %\t");
-  
-  return h;
-}
-
-float Moisture_read(){
-
-  delay(2000);
-
-  int sensorValue = analogRead(rainPin);
-  float val = sensorValue;
-  
-  Serial.print(val);
-  
-  if(sensorValue > thresholdValue){
-    Serial.println(" - Doesn't need watering");
-  }
-  else {
-    Serial.println(" - Time to water your plant");
-  }
-
-  return val;
-}
-
