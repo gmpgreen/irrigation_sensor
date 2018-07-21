@@ -4,23 +4,34 @@
 
 # Import standard python modules.
 import sys
+import RPi.GPIO as GPIO
+import time
 
 # Import Adafruit IO MQTT client.
 from Adafruit_IO import MQTTClient
 
 # Set to your Adafruit IO key.
-# Remember, your key is a secret,
-# so make sure not to publish it when you publish this code!
 ADAFRUIT_IO_KEY = 'e12cd025715b4fd6bca5aff2e7be447c'
 
 # Set to your Adafruit IO username.
-# (go to https://accounts.adafruit.com to find your username)
 ADAFRUIT_IO_USERNAME = 'gabrielgreen'
 
 # Set to the ID of the feed to subscribe to for updates.
 FEED_ID1 = 'temp'
 FEED_ID2 = 'moisture'
 
+#Set up GPIO pins and set threshold value
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(2, GPIO.OUT)
+global threshold
+threshold = 500
+
+# Function for toggle of watering system
+def update_water_signal(wetness):
+    if int(wetness) <= threshold:
+        GPIO.output(2, GPIO.LOW)
+    else:
+        GPIO.output(2, GPIO.HIGH)
 
 # Define callback functions which will be called when certain events happen.
 def connected(client):
@@ -32,7 +43,7 @@ def connected(client):
     # Subscribe to changes on a feed named DemoFeed.
     client.subscribe(FEED_ID1)
 
-    print('Listening for {0} changes to '.format(FEED_ID2))
+    print('Listening for {0} changes... '.format(FEED_ID2))
     client.subscribe(FEED_ID2)
 
 def disconnected(client):
@@ -45,8 +56,11 @@ def message(client, feed_id, payload):  #retain parameter removed
     # The feed_id parameter identifies the feed, and the payload parameter has
     # the new value.
     print('Feed {0} received new value: {1}'.format(feed_id, payload))
-    print(payload)
-
+    if feed_id == FEED_ID1:
+        temp = payload
+    if feed_id == FEED_ID2:
+       moisture = payload
+       update_water_signal(moisture)
 
 # Create an MQTT client instance.
 client = MQTTClient(ADAFRUIT_IO_USERNAME, ADAFRUIT_IO_KEY)
