@@ -7,10 +7,10 @@
 #include "Adafruit_MQTT_Client.h"
 
 /************************* WiFi Access Point *********************************/
-//#define WLAN_SSID      "SHAW-COLDHOUSE-2.4G"
-//#define WLAN_PASS      "engr4life"
-#define WLAN_SSID      "TELUS4850"
-#define WLAN_PASS      "wnpfn2cc5h"
+#define WLAN_SSID      "SHAW-COLDHOUSE-2.4G"
+#define WLAN_PASS      "engr4life"
+//#define WLAN_SSID      "TELUS4850"
+//#define WLAN_PASS      "wnpfn2cc5h"
 
 /************************* Adafruit.io Setup *********************************/ 
 #define AIO_SERVER      "io.adafruit.com"
@@ -32,9 +32,9 @@ Adafruit_MQTT_Client mqtt(&client, AIO_SERVER, AIO_SERVERPORT, AIO_USERNAME, AIO
 
 // Setup a feed called 'temp' for publishing.
 // Notice MQTT paths for AIO follow the form: <username>/feeds/<feedname>
-Adafruit_MQTT_Publish temp = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/temp");
-Adafruit_MQTT_Publish moisture = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/moisture");
-Adafruit_MQTT_Publish humidity = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/humidity");
+Adafruit_MQTT_Publish temp = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/temp2");
+Adafruit_MQTT_Publish moisture = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/moisture2");
+Adafruit_MQTT_Publish humidity = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/humidity2");
 
 // Setup a feed called 'onoff' for subscribing to changes.
 Adafruit_MQTT_Subscribe temp_out = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/feeds/temp_out");

@@ -18,7 +18,7 @@ void loop() {
   Serial.print(F("\nSending temp val "));
   Serial.print(x);
   Serial.print("...");
-  if (temp2.publish(x) == 0) {
+  if (temp.publish(x) == 0) {
     Serial.println(F("Failed"));
   } else {
     Serial.println(F("OK!"));
@@ -28,7 +28,7 @@ void loop() {
   Serial.print(F("\nSending moisture val "));
   Serial.print(y);
   Serial.print("...");
-  if (moisture2.publish(y) == 0) {
+  if (moisture.publish(y) == 0) {
     Serial.println(F("Failed"));
   } else {
     Serial.println(F("OK!"));
@@ -38,7 +38,7 @@ void loop() {
   Serial.print(F("\nSending humidity val "));
   Serial.print(z);
   Serial.print("...");
-  if (humidity2.publish(z) == 0) {
+  if (humidity.publish(z) == 0) {
     Serial.println(F("Failed"));
   } else {
     Serial.println(F("OK!"));

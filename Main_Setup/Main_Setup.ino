@@ -7,10 +7,10 @@
 #include "Adafruit_MQTT_Client.h"
 
 /************************* WiFi Access Point *********************************/
-//#define WLAN_SSID      "SHAW-COLDHOUSE-2.4G"
-//#define WLAN_PASS      "engr4life"
-#define WLAN_SSID      "TELUS4850"
-#define WLAN_PASS      "wnpfn2cc5h"
+#define WLAN_SSID      "SHAW-COLDHOUSE-2.4G"
+#define WLAN_PASS      "engr4life"
+//#define WLAN_SSID      "TELUS4850"
+//#define WLAN_PASS      "wnpfn2cc5h"
 
 /************************* Adafruit.io Setup *********************************/ 
 #define AIO_SERVER      "io.adafruit.com"
