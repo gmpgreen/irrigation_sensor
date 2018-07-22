@@ -17,22 +17,33 @@ ADAFRUIT_IO_KEY = 'e12cd025715b4fd6bca5aff2e7be447c'
 ADAFRUIT_IO_USERNAME = 'gabrielgreen'
 
 # Set to the ID of the feed to subscribe to for updates.
-FEED_ID1 = 'temp'
-FEED_ID2 = 'moisture'
+FEED_ID1 = 'moisture'
+FEED_ID2 = 'moisture2'
 
 #Set up GPIO pins and set threshold value
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(2, GPIO.OUT)
+GPIO.setup(3, GPIO.OUT)
+GPIO.setup(4, GPIO.OUT)
 global threshold
 threshold = 500
 
-# Function for toggle of watering system
-def update_water_signal(wetness):
+# Functions for toggle of watering system
+def update_signal_valve(wetness):
     if int(wetness) <= threshold:
-        GPIO.output(2, GPIO.LOW)
+        GPIO.output(2, GPIO.LOW) #Activate Valve 1
+        GPIO.output(4, GPIO.HIGH) #Activate Pump
     else:
-        GPIO.output(2, GPIO.HIGH)
-
+        GPIO.output(2, GPIO.HIGH) #Turn off Valve 1
+        GPIO.output(4, GPIO.LOW) #Turn off Pump
+def update_signal_valve2(wetness):
+    if int(wetness) <= threshold:
+        GPIO.output(3, GPIO.LOW) #Active Valve 2
+        GPIO.output(4, GPIO.HIGH) #Activate Pump
+    else:
+        GPIO.output(3, GPIO.HIGH) #Turn off Valve 2
+        GPIO.output(4, GPIO.LOW) #Turn off Pump
+        
 # Define callback functions which will be called when certain events happen.
 def connected(client):
     # Connected function will be called when the client is connected to Adafruit IO.
@@ -57,10 +68,11 @@ def message(client, feed_id, payload):  #retain parameter removed
     # the new value.
     print('Feed {0} received new value: {1}'.format(feed_id, payload))
     if feed_id == FEED_ID1:
-        temp = payload
+        moisture = payload
+        update_signal_valve(moisture)
     if feed_id == FEED_ID2:
-       moisture = payload
-       update_water_signal(moisture)
+       moisture2 = payload
+       update_signal_valve2(moisture2)
 
 # Create an MQTT client instance.
 client = MQTTClient(ADAFRUIT_IO_USERNAME, ADAFRUIT_IO_KEY)
