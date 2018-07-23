@@ -28,6 +28,11 @@ GPIO.setup(4, GPIO.OUT)
 global threshold
 threshold = 425
 
+#Turn off everything upon startup
+GPIO.output(2, GPIO.HIGH) #Turn off Valve 1
+GPIO.output(3, GPIO.HIGH) #Turn off Valve 2
+GPIO.output(4, GPIO.LOW) #Turn off Pump
+
 # Functions for toggle of watering system
 def update_signal_valve(wetness):
     if int(wetness) <= threshold:
