@@ -9,8 +9,8 @@
 /************************* WiFi Access Point *********************************/
 #define WLAN_SSID      "SHAW-COLDHOUSE-2.4G"
 #define WLAN_PASS      "engr4life"
-//#define WLAN_SSID      "TELUS4850"
-//#define WLAN_PASS      "wnpfn2cc5h"
+//define WLAN_SSID      "TELUS4850"
+//define WLAN_PASS      "wnpfn2cc5h"
 
 /************************* Adafruit.io Setup *********************************/ 
 #define AIO_SERVER      "io.adafruit.com"
@@ -52,8 +52,7 @@ Adafruit_MQTT_Subscribe temp_out = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "
 DHT dht(DHTPIN, DHTTYPE);
 
 int moisturePin = A0;
-int thresholdValue = 800; // Change this to change when plant gets watered
-
+int thresholdValue = 800; // Not used currently
 
 /*************************** Sketch Code ************************************/
 
@@ -62,6 +61,10 @@ int thresholdValue = 800; // Change this to change when plant gets watered
 void MQTT_connect();
  
 void setup() {
+  //GPIO power for sensors:
+  pinMode(12, OUTPUT);
+  pinMode(14, OUTPUT);
+  
   Serial.begin(115200);
   delay(10);
 
