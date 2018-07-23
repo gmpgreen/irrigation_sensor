@@ -26,7 +26,7 @@ GPIO.setup(2, GPIO.OUT)
 GPIO.setup(3, GPIO.OUT)
 GPIO.setup(4, GPIO.OUT)
 global threshold
-threshold = 500
+threshold = 425
 
 # Functions for toggle of watering system
 def update_signal_valve(wetness):
