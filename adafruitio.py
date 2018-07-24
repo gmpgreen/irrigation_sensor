@@ -38,6 +38,7 @@ def update_signal_valve(wetness):
     if int(wetness) <= threshold:
         GPIO.output(2, GPIO.LOW) #Activate Valve 1
         GPIO.output(4, GPIO.HIGH) #Activate Pump
+        time.sleep(6)
     else:
         GPIO.output(2, GPIO.HIGH) #Turn off Valve 1
         GPIO.output(4, GPIO.LOW) #Turn off Pump
@@ -45,6 +46,7 @@ def update_signal_valve2(wetness):
     if int(wetness) <= threshold:
         GPIO.output(3, GPIO.LOW) #Active Valve 2
         GPIO.output(4, GPIO.HIGH) #Activate Pump
+        time.sleep(6)
     else:
         GPIO.output(3, GPIO.HIGH) #Turn off Valve 2
         GPIO.output(4, GPIO.LOW) #Turn off Pump
